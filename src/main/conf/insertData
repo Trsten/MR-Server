@@ -1,0 +1,35 @@
+--INSERT MEETING_SCHEDULE
+
+INSERT INTO MEETING_SCHEDULE(id,recurrence_type,description) VALUES(50,'only once','jeden krat v kalendari');
+INSERT INTO MEETING_SCHEDULE(id,recurrence_type,description) VALUES(51,'every week','kazdy tyzden');
+INSERT INTO MEETING_SCHEDULE(id,recurrence_type,description) VALUES(52,'every month','kazdy mesiac');
+
+--INSERT MEETING_STATUS
+
+INSERT INTO MEETING_STATUS(id,status,description) VALUES(40,'planovany','meeting sa este nekonal');
+INSERT INTO MEETING_STATUS(id,status,description) VALUES(41,'zruseny','meeting bol zruseny');
+INSERT INTO MEETING_STATUS(id,status,description) VALUES(42,'skonceny','meeting sa uz uskutocnil');
+INSERT INTO MEETING_STATUS(id,status,description) VALUES(43,'uzavrety','meeting sa uz nebude menit');
+
+--INSERT ATTENDANT_STATUS
+
+INSERT INTO ATTENDANT_STATUS(id,status,icon,description) VALUES(30,'pozvany','-','ucastnik bol poyvany');
+INSERT INTO ATTENDANT_STATUS(id,status,icon,description) VALUES(31,'zucastni sa','+','ucastnik sa zucastni meeting');
+INSERT INTO ATTENDANT_STATUS(id,status,icon,description) VALUES(32,'nezucastni sa','x','ucastnik sa nezucastni');
+
+--INSERT MRUSER
+
+INSERT INTO MRUSER(id,NAME,EMAIL,PASSWORD) VALUES(01,'Patrik Trstensky','p.trstensky@gmail.com','asd');
+INSERT INTO MRUSER(id,NAME,EMAIL,PASSWORD) VALUES(02,'Mario Meixner','mariusmeixner@gmail.com','qwe');
+INSERT INTO MRUSER(id,NAME,EMAIL,PASSWORD) VALUES(03,'Fero Mrkva','feromrkva@gmail.com','a');
+
+--INSERT MEETING
+
+INSERT INTO MEETING(ID,ID_USER,ID_MEETING_STATUS,ID_MEETING_SCHEDULE,ID_PARENT,DATE,SHORT_TITLE,END_DATE,PLACE,DESCRIPTION,TOPIC)
+VALUES (1,01,40,50,1,'11-02-2020 14:00:00','prvy meeting','29-05-2020','A1','zoznamovanie sa s postgresql databazou','postgresql databaza');
+
+INSERT INTO MEETING(ID,ID_USER,ID_MEETING_STATUS,ID_MEETING_SCHEDULE,ID_PARENT,DATE,SHORT_TITLE,END_DATE,PLACE,DESCRIPTION,TOPIC)
+VALUES (2,01,41,51,2,'11-02-2020 12:00:00','druhy meeting','29-05-2020','A1','zoznamovanie sa s web services','web services');
+
+INSERT INTO ATTENDANT ( ID, ID_MEETING, ID_ATTENDANT_STATUS, ID_USER ) VALUES( 1, 1, 30, 02);
+INSERT INTO ATTENDANT ( ID, ID_MEETING, ID_ATTENDANT_STATUS, ID_USER ) VALUES( 2, 2, 30, 02);

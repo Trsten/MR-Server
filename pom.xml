@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.sam</groupId>
+  <artifactId>meetingReport</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <name>MRAAA1</name>
+  <packaging>war</packaging>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <liberty.server.name>${project.artifactId}-server</liberty.server.name>
+  </properties>
+
+  <dependencies>
+    <!-- MicroProfile 2.1+ - https://github.com/eclipse/microprofile/releases/download/2.1/microprofile-spec-2.1.pdf -->
+    <dependency>
+      <groupId>org.eclipse.microprofile</groupId>
+      <artifactId>microprofile</artifactId>
+      <version>3.2</version>
+      <type>pom</type>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.8.5</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.jaxrs20 -->
+    <dependency>
+      <groupId>com.ibm.websphere.appserver.api</groupId>
+      <artifactId>com.ibm.websphere.appserver.api.jaxrs20</artifactId>
+      <version>1.0.10</version>
+    </dependency>
+
+    <!-- JEE8 Web Profile - http://download.oracle.com/otn-pub/jcp/java_ee_web_profile-8-final-eval-spec/WebProfile.pdf -->
+    <dependency>
+      <groupId>javax</groupId>
+      <artifactId>javaee-web-api</artifactId>
+      <version>8.0.1</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/javax.mail/javax.mail-api -->
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>javax.mail-api</artifactId>
+      <version>1.6.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+
+  <build>
+
+    <!-- Suppress default naming that appends version to the name of the WAR file -->
+    <finalName>mrreport</finalName>
+
+    <!-- Filter (replace place-holders) in configuration files from META-INF directory -->
+    <resources>
+      <resource>
+        <directory>src/main/resources/</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+
+    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+      <plugins>
+        <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
+        <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.0.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.22.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.0.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>2.5.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.8.2</version>
+        </plugin>
+        <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.7.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>3.2.3</version>
+          <configuration>
+            <failOnMissingWebXml>false</failOnMissingWebXml>
+            <webResources>
+              <resource>
+                <directory>src/main/resources</directory>
+              </resource>
+            </webResources>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+
+    <!-- Maven handled Open Liberty - nothing pre-installed would be needed -->
+    <profile>
+      <id>liberty</id>
+      <build>
+        <plugins>
+          <!-- Open Liberty -->
+          <plugin>
+            <groupId>net.wasdev.wlp.maven.plugins</groupId>
+            <artifactId>liberty-maven-plugin</artifactId>
+            <version>2.6.4</version>
+            <configuration>
+              <!-- defines debug port, default port 7777 -->
+              <jvmOptions>
+                <param>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=7777</param>
+              </jvmOptions>
+              <serverName>${liberty.server.name}</serverName>
+              <configFile>src/main/conf/server.xml</configFile>
+              <installAppPackages>project</installAppPackages>
+              <looseApplication>true</looseApplication>
+              <stripVersion>true</stripVersion>
+              <packageFile>${project.build.directory}/${project.artifactId}.zip</packageFile>
+              <include>usr</include>
+              <assemblyArtifact>
+                <groupId>io.openliberty</groupId>
+                <artifactId>openliberty-runtime</artifactId>
+                <version>RELEASE</version>
+                <type>zip</type>
+              </assemblyArtifact>
+              <skipLibertyPackage>true</skipLibertyPackage>
+            </configuration>
+            <executions>
+              <execution>
+                <id>stop-server-before-clean</id>
+                <phase>pre-clean</phase>
+                <goals>
+                  <goal>stop-server</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>create-server</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>install-server</goal>
+                  <goal>create-server</goal>
+                </goals>
+                <configuration>
+                  <serverEnv>${basedir}/build.properties</serverEnv>
+                </configuration>
+              </execution>
+              <execution>
+                <id>install-feature</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>install-feature</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>install-apps</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>install-apps</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>package-server</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>package-server</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>3.0.2</version>
+            <executions>
+              <execution>
+                <id>copy-jdbc-jar-to-server2</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <resources>
+                    <resource>
+                      <directory>src/main/conf/lib</directory>
+                    </resource>
+                  </resources>
+                  <outputDirectory>${project.build.directory}/liberty/wlp/usr/servers/${liberty.server.name}/lib</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="OpenLiberty Java EE 8 Server">
+
+    <featureManager>
+        <!-- https://www.ibm.com/support/knowledgecenter/en/was_beta_liberty/com.ibm.websphere.liberty.autogen.beta.doc/ae/rwlp_feature_microProfile-2.0.html -->
+        <feature>microProfile-2.2</feature>
+        <!-- Swagger UI support-->
+        <feature>servlet-4.0</feature>
+         <!-- https://www.ibm.com/support/knowledgecenter/en/was_beta_liberty/com.ibm.websphere.liberty.autogen.beta.doc/ae/rwlp_feature_webProfile-8.0.html -->
+        <feature>webProfile-8.0</feature>
+        <feature>javaMail-1.6</feature>
+    </featureManager>
+
+    <dataSource id="DefaultDataSource" jndiName="jdbc/patrik">
+        <jdbcDriver libraryRef="PostgresLib"/>
+            <properties.postgresql serverName="127.0.0.1" portNumber="5432" databaseName="postgres"
+                                       user="patrik" password="patrik"/>
+    </dataSource>
+
+    <library id="PostgresLib">
+        <fileset dir="${server.config.dir}/lib" includes="postgresql-42.2.8.jar" />
+    </library>
+
+    <httpEndpoint id="default-http-endpoint"
+                  httpPort="9008"
+                  httpsPort="9440"
+                  host="*" />
+
+    <webApplication id="mrServer-app"
+                    location="mrreport.war"
+                    contextRoot="/">
+                    <application-bnd>
+                        <security-role name="administration" >
+                            <user name="admin" />
+                        </security-role>
+                    </application-bnd>
+    </webApplication>
+
+    <basicRegistry id="basic" realm="WebRealm">
+        <user name="admin" password="admin" />
+    </basicRegistry>
+
+    <administrator-role>
+        <user>admin</user>
+    </administrator-role>
+
+    <cors domain="/"
+          allowedOrigins="*"
+          allowedMethods="GET, POST, PUT, DELETE"
+          allowedHeaders="*,Authorization,message,status"
+          allowCredentials="true"
+          maxAge="0"
+          exposeHeaders="*,Authorization,message,status"/>
+</server>
