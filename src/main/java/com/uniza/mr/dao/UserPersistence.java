@@ -41,6 +41,15 @@ public class UserPersistence {
         throw new MRException("Entity with entered email doesnt exist.");
     }
 
+    private User findUser( Long id )  throws MRException {
+        User user = this.entityManager.find(User.class, id);
+
+        if (user == null) {
+            throw new MRException("Cant find an entity with entered ID.");
+        }
+        return user;
+    }
+
     public void persistUser(User paUser) throws MRException {
 
         User user = this.entityManager.find(User.class, paUser.getId());
@@ -54,18 +63,13 @@ public class UserPersistence {
 
     public void updateUser(User paUser) throws MRException {
 
-        User user = this.entityManager.find(User.class, paUser.getId());
-
-        if (user == null) {
-            throw new MRException("Cannot find an entity with entered ID.");
-        }
-
+        User user = this.findUser(paUser.getId());
         this.entityManager.merge(paUser);
     }
 
     public void deleteUser(Long id) throws MRException {
 
-        User user = this.entityManager.find(User.class, id);;
+        User user = this.findUser(id);
         this.entityManager.remove(user);
     }
 
@@ -77,4 +81,5 @@ public class UserPersistence {
         }
         return pomUser;
     }
+
 }

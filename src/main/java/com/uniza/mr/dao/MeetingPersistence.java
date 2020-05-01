@@ -84,24 +84,22 @@ public class MeetingPersistence {
 
     public Meeting persistMeeting(Meeting paMeeting) throws MRException {
 
-        Meeting meeting = paMeeting;
-
-        if (meeting.getMeetingScheduleId() == null) {
+        if (paMeeting.getMeetingScheduleId() == null) {
             throw new MRException("Meeting schedule is empty.");
         }
-        if (meeting.getPlace() == null) {
+        if (paMeeting.getPlace() == null) {
             throw new MRException("Place is empty.");
         }
 
-        if (meeting.getShortTitle() == null) {
+        if (paMeeting.getShortTitle() == null) {
             throw new MRException("Short title is empty.");
         }
 
-        if(meeting.getMeetingStatusId() == null) {
+        if(paMeeting.getMeetingStatusId() == null) {
             throw new MRException("Meeting status is empty.");
         }
 
-        if(meeting.getAttendants().isEmpty()) {
+        if(paMeeting.getAttendants().isEmpty()) {
             throw new MRException("Nobody was invited to meeting");
         } else {
             for ( Attendant attendant : paMeeting.getAttendants() ) {
@@ -109,14 +107,14 @@ public class MeetingPersistence {
             }
         }
 
-        if( meeting.getMeetingScheduleId()  != null && meeting.getMeetingScheduleId()  == 50) {
-            if (meeting.getEndDate() == null) {
+        if( paMeeting.getMeetingScheduleId()  != null && paMeeting.getMeetingScheduleId()  == 50) {
+            if (paMeeting.getEndDate() == null) {
                 throw new MRException("Meeting end date is empty, cant be empty if you want recurrence meetings");
             }
         }
 
-        this.entityManager.persist(meeting);
-        return meeting;
+        this.entityManager.persist(paMeeting);
+        return paMeeting;
     }
 
     public void updateFamilyOfMeetings(Meeting paMeeting) throws MRException{
@@ -130,7 +128,7 @@ public class MeetingPersistence {
             this.updateMeeting(paMeeting);
         }
 
-        Meeting meeting = this.entityManager.find(Meeting.class, paMeeting.getId());
+        Meeting meeting = findMeeting(paMeeting.getId());
 
         //update parenta ak je planovany
         if ( meeting.getParentId() != null ) {
@@ -148,13 +146,10 @@ public class MeetingPersistence {
     */
     public Meeting updateMeeting(Meeting paMeeting) throws MRException {
 
-        Meeting meeting = this.entityManager.find(Meeting.class, paMeeting.getId());
+        Meeting meeting = this.findMeeting(paMeeting.getId());
 
         Long planning = 50L;
 
-        if (meeting == null) {
-            throw new MRException("Cannot find an entity with entered ID.");
-        }
         if ( paMeeting.getUserId() != null) {
             meeting.setUserId(paMeeting.getUserId());
         }
@@ -207,6 +202,10 @@ public class MeetingPersistence {
                 }
                 if (!found) {
                     Attendant attendant = this.entityManager.find(Attendant.class, meeting.getAttendants().get(index).getId());
+                    // nemalo by vyhodit vynimku pretoze prechadzam ucastnikov ktorý vlastni meeting a tie mazem, ak neexistuje tak ho nemozem ani vymazat
+                    if ( attendant == null ) {
+                        throw new MRException("Cant find attendant by ID of attendant");
+                    }
                     this.entityManager.remove(attendant);
                     meeting.getAttendants().remove(index);
                 }
@@ -247,7 +246,7 @@ public class MeetingPersistence {
  */
     private ArrayList<Long> deleteChildrenMeetings(Long id)  throws MRException {
 
-        Meeting meeting = this.entityManager.find(Meeting.class, id);
+        Meeting meeting = this.findMeeting(id);
 
         List<Meeting> resultList = getChildrenMeetings(id);
 
@@ -270,7 +269,7 @@ public class MeetingPersistence {
     }
 
     private String createQuery(Filter filter) {
-        String query = "";
+        String query;
 
         //triedim podla obidvoch
         if (filter.isOwner() == filter.isAttendant()) {
@@ -302,8 +301,8 @@ public class MeetingPersistence {
         return query + ")" + "ORDER BY m.date";
     }
 
-    private List<Meeting> getChildrenMeetings(Long id) {
-        Meeting meeting = this.entityManager.find(Meeting.class, id);
+    private List<Meeting> getChildrenMeetings(Long id)  throws MRException {
+        Meeting meeting = this.findMeeting(id);
 
         String query = "SELECT e FROM Meeting e WHERE e.parentId = :parentId AND e.meetingStatusId = :meetingStatusId";
         TypedQuery<Meeting> q = this.entityManager.createQuery(query, Meeting.class);

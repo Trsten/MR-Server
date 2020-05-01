@@ -16,7 +16,6 @@ public class RefDataPersistence {
     private EntityManager entityManager;
 
     /*  MEETING STATUS  */
-
     public List<MeetingStatus> findAllMeetingStatuses() throws MRException {
 
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
@@ -56,12 +55,7 @@ public class RefDataPersistence {
 
     public void updateMeetingStatus(MeetingStatus status) throws MRException {
 
-        MeetingStatus meetingStatus = this.entityManager.find(MeetingStatus.class, status.getId());
-
-        if (meetingStatus == null) {
-            throw new MRException("Cannot find an entity with entered ID.");
-        }
-
+        MeetingStatus meetingStatus = this.findMeetingStatus(status.getId());
         this.entityManager.merge(status);
     }
 
@@ -73,7 +67,6 @@ public class RefDataPersistence {
     }
 
     /*  ATTENDANT STATUS  */
-
     public List<AttendantStatus> findAllAttendantStatuses() throws MRException {
 
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
@@ -85,7 +78,6 @@ public class RefDataPersistence {
         if (asList.isEmpty()) {
             throw new MRException("This list is empty.");
         }
-
         return asList;
     }
 
@@ -112,24 +104,17 @@ public class RefDataPersistence {
 
     public void updateAttendantStatus(AttendantStatus status) throws MRException {
 
-        AttendantStatus attendantStatus = this.entityManager.find(AttendantStatus.class, status.getId());
-
-        if (attendantStatus == null) {
-            throw new MRException("Cannot find an entity with entered ID.");
-        }
-
+        AttendantStatus attendantStatus = this.findAttendantStatus(status.getId());
         this.entityManager.merge(status);
     }
 
     public void deleteAttendantStatus(Long id) throws MRException {
 
-        AttendantStatus ms = this.findAttendantStatus(id);
-
-        this.entityManager.remove(ms);
+        AttendantStatus attendantStatus = this.findAttendantStatus(id);
+        this.entityManager.remove(attendantStatus);
     }
 
     /*  MEETING SCHEDULE  */
-
     public List<MeetingSchedule> findAllMeetingSchedules() throws MRException {
 
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
@@ -141,7 +126,6 @@ public class RefDataPersistence {
         if (msList.isEmpty()) {
             throw new MRException("This list is empty.");
         }
-
         return msList;
     }
 
@@ -168,19 +152,13 @@ public class RefDataPersistence {
 
     public void updateMeetingSchedule(MeetingSchedule schedule) throws MRException {
 
-        MeetingSchedule meetingSchedule = this.entityManager.find(MeetingSchedule.class, schedule.getId());
-
-        if (meetingSchedule == null) {
-            throw new MRException("Cannot find an entity with entered ID.");
-        }
-
+        MeetingSchedule meetingSchedule = this.findMeetingSchedule(schedule.getId());
         this.entityManager.merge(schedule);
     }
 
     public void deleteMeetingSchedule(Long id) throws MRException {
 
         MeetingSchedule meetingSchedule = this.findMeetingSchedule(id);
-
         this.entityManager.remove(meetingSchedule);
     }
 }
