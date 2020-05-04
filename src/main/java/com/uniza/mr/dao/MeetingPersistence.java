@@ -127,7 +127,7 @@ public class MeetingPersistence {
         return paMeeting;
     }
 
-    public void updateFamilyOfMeetings(Meeting paMeeting) throws MRException{
+    public Meeting updateFamilyOfMeetings(Meeting paMeeting) throws MRException{
 
         this.updateMeeting(paMeeting);
         List<Meeting> resultList = getChildrenMeetings(paMeeting.getId());
@@ -148,6 +148,7 @@ public class MeetingPersistence {
                 this.updateMeeting(paMeeting);
             }
         }
+        return paMeeting;
     }
 
     /*

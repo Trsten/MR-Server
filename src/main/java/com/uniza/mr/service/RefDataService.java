@@ -35,7 +35,7 @@ public class RefDataService {
     @Path("/meetingStatus/create")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Add a meeting status")
-    public void createMeetingStatus(MeetingStatus status) throws MRException { dao.persistMeetingStatus(status); }
+    public MeetingStatus createMeetingStatus(MeetingStatus status) throws MRException { return dao.persistMeetingStatus(status); }
 
     @GET
     @Path("/meetingStatus/{id}")
@@ -47,13 +47,13 @@ public class RefDataService {
     @Path("/meetingStatus/update")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Update a meeting status")
-    public void updateMeetingStatus(MeetingStatus status) throws MRException { dao.updateMeetingStatus(status); }
+    public MeetingStatus updateMeetingStatus(MeetingStatus status) throws MRException { return dao.updateMeetingStatus(status); }
 
     @DELETE()
     @Path("/meetingStatus/delete/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Delete a meeting status")
-    public void deleteMeetingStatus(@PathParam("id") Long id) throws MRException { dao.deleteMeetingStatus(id); }
+    public Long deleteMeetingStatus(@PathParam("id") Long id) throws MRException { return dao.deleteMeetingStatus(id); }
 
     /*  Attendant Status  */
 
@@ -69,7 +69,7 @@ public class RefDataService {
     @Path("/attendantStatus/create")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Add an attendant status")
-    public void createAttendantStatus(AttendantStatus status) throws MRException { dao.persistAttendantStatus(status); }
+    public AttendantStatus createAttendantStatus(AttendantStatus status) throws MRException { return dao.persistAttendantStatus(status); }
 
     @GET
     @Path("/attendantStatus/{id}")
@@ -81,13 +81,13 @@ public class RefDataService {
     @Path("/attendantStatus/update")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Update an attendant status")
-    public void updateAttendantStatus(AttendantStatus status) throws MRException { dao.updateAttendantStatus(status); }
+    public AttendantStatus updateAttendantStatus(AttendantStatus status) throws MRException { return dao.updateAttendantStatus(status); }
 
     @DELETE()
     @Path("/attendantStatus/delete/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Delete an attendant status")
-    public void deleteAttendantStatus(@PathParam("id") Long id) throws MRException { dao.deleteAttendantStatus(id); }
+    public Long deleteAttendantStatus(@PathParam("id") Long id) throws MRException { return dao.deleteAttendantStatus(id); }
 
 
     /*  Meeting Schedule    */
@@ -104,7 +104,7 @@ public class RefDataService {
     @Path("/meetingSchedule/create")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Add a meeting schedule")
-    public void createMeetingSchedule(MeetingSchedule schedule) throws MRException { dao.persistMeetingSchedule(schedule); }
+    public MeetingSchedule createMeetingSchedule(MeetingSchedule schedule) throws MRException { return dao.persistMeetingSchedule(schedule); }
 
     @GET
     @Path("/meetingSchedule/{id}")
@@ -116,11 +116,11 @@ public class RefDataService {
     @Path("/meetingSchedule/update")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Update a meeting schedule")
-    public void updateMeetingSchedule(MeetingSchedule schedule) throws MRException { dao.updateMeetingSchedule(schedule); }
+    public MeetingSchedule updateMeetingSchedule(MeetingSchedule schedule) throws MRException { return dao.updateMeetingSchedule(schedule); }
 
     @DELETE()
     @Path("/meetingSchedule/delete/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Delete a meeting schedule")
-    public void deleteMeetingSchedule(@PathParam("id") Long id) throws MRException { dao.deleteMeetingSchedule(id); }
+    public MeetingSchedule deleteMeetingSchedule(@PathParam("id") Long id) throws MRException { return dao.deleteMeetingSchedule(id); }
 }

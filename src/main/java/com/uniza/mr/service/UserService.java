@@ -33,7 +33,7 @@ public class UserService {
     @Path("/create")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Add user")
-    public void createUser(User user) throws MRException { dao.persistUser(user); }
+    public User createUser(User user) throws MRException { return dao.persistUser(user); }
 
     @GET
     @Path("/{email}")
@@ -47,13 +47,13 @@ public class UserService {
     @Path("/update")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Update user's data")
-    public void updateUser(User user) throws MRException { dao.updateUser(user); }
+    public User updateUser(User user) throws MRException { return dao.updateUser(user); }
 
     @DELETE()
     @Path("/delete/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Delete user")
-    public void deleteUser(@PathParam("id") Long id) throws MRException { dao.deleteUser(id); }
+    public Long deleteUser(@PathParam("id") Long id) throws MRException { return dao.deleteUser(id); }
 
     @POST
     @Path("login")

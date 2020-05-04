@@ -64,7 +64,7 @@ public class MeetingService {
     @Path("/updateFamily")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(summary = "Update a family of  meetings")
-    public void updateFamilyOfMeetings(Meeting meeting) throws MRException { dao.updateFamilyOfMeetings(meeting); }
+    public Meeting updateFamilyOfMeetings(Meeting meeting) throws MRException { return dao.updateFamilyOfMeetings(meeting); }
 
     @DELETE()
     @Path("/delete/{id}/{delChildrens}")

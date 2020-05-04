@@ -1,6 +1,7 @@
 package com.uniza.mr.dao;
 
 import com.uniza.mr.exception.MRException;
+import com.uniza.mr.model.Attendant;
 import com.uniza.mr.model.AttendantStatus;
 import com.uniza.mr.model.MeetingSchedule;
 import com.uniza.mr.model.MeetingStatus;
@@ -42,7 +43,7 @@ public class RefDataPersistence {
         return meetingStatus;
     }
 
-    public void persistMeetingStatus(MeetingStatus status) throws MRException {
+    public MeetingStatus persistMeetingStatus(MeetingStatus status) throws MRException {
 
         MeetingStatus meetingStatus = this.entityManager.find(MeetingStatus.class, status.getId());
 
@@ -51,19 +52,22 @@ public class RefDataPersistence {
         }
 
         this.entityManager.persist(status);
+        return status;
     }
 
-    public void updateMeetingStatus(MeetingStatus status) throws MRException {
+    public MeetingStatus updateMeetingStatus(MeetingStatus status) throws MRException {
 
         MeetingStatus meetingStatus = this.findMeetingStatus(status.getId());
         this.entityManager.merge(status);
+        return status;
     }
 
-    public void deleteMeetingStatus(Long id) throws MRException {
+    public Long deleteMeetingStatus(Long id) throws MRException {
 
         MeetingStatus meetingStatus = this.findMeetingStatus(id);
 
         this.entityManager.remove(meetingStatus);
+        return meetingStatus.getId();
     }
 
     /*  ATTENDANT STATUS  */
@@ -92,7 +96,7 @@ public class RefDataPersistence {
         return attendantStatus;
     }
 
-    public void persistAttendantStatus(AttendantStatus status) throws MRException {
+    public AttendantStatus persistAttendantStatus(AttendantStatus status) throws MRException {
         AttendantStatus attendantStatus = this.entityManager.find(AttendantStatus.class, status.getId());
 
         if (attendantStatus != null) {
@@ -100,18 +104,21 @@ public class RefDataPersistence {
         }
 
         this.entityManager.persist(status);
+        return status;
     }
 
-    public void updateAttendantStatus(AttendantStatus status) throws MRException {
+    public AttendantStatus updateAttendantStatus(AttendantStatus status) throws MRException {
 
         AttendantStatus attendantStatus = this.findAttendantStatus(status.getId());
         this.entityManager.merge(status);
+        return status;
     }
 
-    public void deleteAttendantStatus(Long id) throws MRException {
+    public Long deleteAttendantStatus(Long id) throws MRException {
 
         AttendantStatus attendantStatus = this.findAttendantStatus(id);
         this.entityManager.remove(attendantStatus);
+        return id;
     }
 
     /*  MEETING SCHEDULE  */
@@ -140,7 +147,7 @@ public class RefDataPersistence {
         return meetingSchedule;
     }
 
-    public void persistMeetingSchedule(MeetingSchedule schedule) throws MRException {
+    public MeetingSchedule persistMeetingSchedule(MeetingSchedule schedule) throws MRException {
         MeetingSchedule meetingSchedule = this.entityManager.find(MeetingSchedule.class, schedule.getId());
 
         if (meetingSchedule != null) {
@@ -148,17 +155,20 @@ public class RefDataPersistence {
         }
 
         this.entityManager.persist(schedule);
+        return schedule;
     }
 
-    public void updateMeetingSchedule(MeetingSchedule schedule) throws MRException {
+    public MeetingSchedule updateMeetingSchedule(MeetingSchedule schedule) throws MRException {
 
         MeetingSchedule meetingSchedule = this.findMeetingSchedule(schedule.getId());
         this.entityManager.merge(schedule);
+        return schedule;
     }
 
-    public void deleteMeetingSchedule(Long id) throws MRException {
+    public MeetingSchedule deleteMeetingSchedule(Long id) throws MRException {
 
         MeetingSchedule meetingSchedule = this.findMeetingSchedule(id);
         this.entityManager.remove(meetingSchedule);
+        return meetingSchedule;
     }
 }

@@ -50,7 +50,7 @@ public class UserPersistence {
         return user;
     }
 
-    public void persistUser(User paUser) throws MRException {
+    public User persistUser(User paUser) throws MRException {
 
         User user = this.entityManager.find(User.class, paUser.getId());
 
@@ -59,18 +59,21 @@ public class UserPersistence {
         }
 
         this.entityManager.persist(paUser);
+        return paUser;
     }
 
-    public void updateUser(User paUser) throws MRException {
+    public User updateUser(User paUser) throws MRException {
 
         User user = this.findUser(paUser.getId());
         this.entityManager.merge(paUser);
+        return paUser;
     }
 
-    public void deleteUser(Long id) throws MRException {
+    public Long deleteUser(Long id) throws MRException {
 
         User user = this.findUser(id);
         this.entityManager.remove(user);
+        return id;
     }
 
     public User logIn(User user) throws MRException {
