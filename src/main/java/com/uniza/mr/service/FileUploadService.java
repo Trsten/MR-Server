@@ -121,9 +121,11 @@ public class FileUploadService {
             throw new MRFileException("Entity info not provided","Please specify entity ID and entity date");
         }
         /* storage location for entity */
-        File directory = new File( buildTargetPath( entityStorageData));
+
+        File directory = new File( FILES_PATH + File.separator + entityStorageData.getEntityId());
+
         if ( !directory.exists()) {
-            throw new MRFileException("Directory not found","Provided directory name not found in storage.");
+            return entityStorageData;
         }
 
         List<EntityFileData> result = new ArrayList<>();
@@ -357,12 +359,10 @@ public class FileUploadService {
      */
     private String buildTargetPath(EntityStorageData storageData) throws MRFileException {
         String fullPath = null;
-
         /* new object = ID does not exist yet
          * 1.) directory comes in request (client wants to send files to the same folder in paralel request = must provide directory
          * 2.) directory is empty = auto generate here
          */
-
         if ( storageData.getEntityId() == null) {
             fullPath = FILES_PATH + File.separator +
                     (storageData.getDirectory() == null || storageData.getDirectory().trim().length() == 0 ?
