@@ -11,6 +11,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 public class MeetingPersistence {
 
@@ -68,6 +69,15 @@ public class MeetingPersistence {
         if (filter.getEndDate() != null) {
             q.setParameter("endDate",filter.getEndDate());
          }
+
+        //aktualizuj planovany -> uskutocneny ak po datume
+        for ( Meeting mt : q.getResultList() ) {
+            if ( mt.getMeetingStatusId() == 40L && mt.getDate().compareTo(new Date()) < 0) {
+                mt.setMeetingStatusId(42L);
+                this.entityManager.merge(mt);
+            }
+        }
+
         return q.getResultList();
     }
 
@@ -241,7 +251,7 @@ public class MeetingPersistence {
 
     /*
     vymazem meeting s id
-    vymazem meetingy ktore maju nastavene parenta ako id hlavneho meetingu
+    vymazem meetingy ktore maju nastaveneho parenta ako id hlavneho meetingu
     vymazem iba ak je meeting planovany
  */
     private ArrayList<Long> deleteChildrenMeetings(Long id)  throws MRException {

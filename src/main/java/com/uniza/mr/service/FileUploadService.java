@@ -42,51 +42,12 @@ import java.util.regex.Pattern;
 @Tag(name = "File operations", description = "Operations related to file upload and directory handling.")
 public class FileUploadService {
 
-//    @Inject
-//    @ConfigProperty(name="storage.pathRoot", defaultValue="c:\\eapdata")
-//    private String pathRoot;
-
-//    @Inject
-//    @ConfigProperty(name="storage.pathTemp", defaultValue="c:\\eapdata\\tmp")
-//    private String pathTemp;
-
-    /* Paths to external file system storage */
-    public static String pathRoot;
-    public static String pathTemp;
-
     /* Allowed characters for uploaded file name */
     private static final Pattern PATTERN = Pattern.compile("[^A-Za-z0-9_\\-\\.]");
     /* Max. length of uploaded file name */
     private static final int MAX_LENGTH = 127;
 
-    @POST
-    @Path("/delete/{tmpDirectory}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Operation(summary = "Delete directory in temporary location and all its content.")
-    @SecurityRequirement(name = "bearerAuth")
-    public Response deleteDirectory( @PathParam("tmpDirectory") String directoryName) throws MRFileException {
-        File directory = new File( pathTemp + File.separator + directoryName);
-        if ( !directory.exists()) {
-            throw new MRFileException("Directory not found","Provided directory name not found in temporary location.");
-        }
-        // Check directory content and remove it first
-        File[] contents = directory.listFiles();
-        if (contents != null) {
-            for (File file : contents) {
-               if ( !file.delete()) {
-                   throw new MRFileException("File delete failure","File ["+file.getName()+"] can not be deleted.");
-               }
-            }
-        }
-        // Remove directory
-        if ( !directory.delete()) {
-            throw new MRFileException("Directory delete failure","Directory ["+directoryName+"] can not be deleted.");
-        }
-        return Response.status(Response.Status.OK)
-                .header("message", "Temporary folder "+directoryName+" deleted with its content.")
-                .build();
-    }
+    private static final String FILES_PATH = "C:" + File.separator +"mrfilestorage";
 
     @POST
     @Path("/delete/entity")
@@ -165,7 +126,7 @@ public class FileUploadService {
             throw new MRFileException("Directory not found","Provided directory name not found in storage.");
         }
 
-        List<EntityFileData> result = new ArrayList<EntityFileData>();
+        List<EntityFileData> result = new ArrayList<>();
         File[] contents = directory.listFiles();
         if (contents != null) {
             for (File file : contents) {
@@ -194,6 +155,8 @@ public class FileUploadService {
                             content = @Content(mediaType = "application/json")) })
     @SecurityRequirement(name = "bearerAuth")
     public EntityStorageData uploadFile(IMultipartBody multipartBody) throws MRFileException {
+
+
         EntityStorageData uploadData = null;
 
         /* 1.) Attachments from message are parsed
@@ -219,6 +182,7 @@ public class FileUploadService {
                 *  3.) Data attachment does not have it */
                 String[] contentDisposition = map.getFirst("Content-Disposition").split(";");
                 for (String line : contentDisposition) {
+
                     if (line != null && line.toLowerCase().contains("filename=")) {
                         String[] names = line.split("=");
                         fileName = names[1].trim().replaceAll("\"", "");
@@ -301,9 +265,6 @@ public class FileUploadService {
                 .build();
     }
 
-
-
-
     private String getFileName(MultivaluedMap<String, String> header) {
 
         String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
@@ -314,8 +275,7 @@ public class FileUploadService {
 
                 String[] name = filename.split("=");
 
-                String finalFileName = name[1].trim().replaceAll("\"", "");
-                return finalFileName;
+                return name[1].trim().replaceAll("\"", "");
             }
         }
         return "unknown";
@@ -402,8 +362,9 @@ public class FileUploadService {
          * 1.) directory comes in request (client wants to send files to the same folder in paralel request = must provide directory
          * 2.) directory is empty = auto generate here
          */
+
         if ( storageData.getEntityId() == null) {
-            fullPath = "files" + File.separator +
+            fullPath = FILES_PATH + File.separator +
                     (storageData.getDirectory() == null || storageData.getDirectory().trim().length() == 0 ?
                     storageData.getEntityId() : storageData.getDirectory());
         } else {
@@ -412,7 +373,7 @@ public class FileUploadService {
              * 2.) if storageData contains also entity directory -> check existence -> create if needed
              */
             //LocalDate date = storageData.getEntityDate();
-            fullPath = "files" + File.separator + storageData.getEntityId();
+            fullPath = FILES_PATH + File.separator + storageData.getEntityId();
         }
         try {
             java.nio.file.Path path = Paths.get( fullPath);
@@ -428,7 +389,7 @@ public class FileUploadService {
      * Rename file name if required
      * Note: Original replacement with %xx is now only %
      * @param inFileName
-     * @return
+     * @return Filename
      */
     private String escapeStringAsFilename(String inFileName) {
 
