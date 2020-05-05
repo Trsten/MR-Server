@@ -202,9 +202,12 @@ public class MeetingPersistence {
 
                 for (int i = 0; i < paMeeting.getAttendants().size(); i++) {
                     Long paAttUserId = paMeeting.getAttendants().get(i).getUserId();
-
                     if (paAttUserId.equals(attUserId)) {
                         found = true;
+                        Long attendantStatusId = paMeeting.getAttendants().get(i).getAttendantStatusId();
+                        if ( attendantStatusId != null && !attendantStatusId.equals(meeting.getAttendants().get(index).getAttendantStatusId())) {
+                            meeting.getAttendants().get(index).setAttendantStatusId(paMeeting.getAttendants().get(i).getAttendantStatusId());
+                        }
                         meeting.getAttendants().get(index).setMeeting(meeting);
                         index++;
                         paMeeting.getAttendants().remove(i);
