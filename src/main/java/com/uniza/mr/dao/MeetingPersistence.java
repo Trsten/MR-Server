@@ -97,11 +97,11 @@ public class MeetingPersistence {
         if (paMeeting.getMeetingScheduleId() == null) {
             throw new MRException("Meeting schedule is empty.");
         }
-        if (paMeeting.getPlace() == null) {
+        if (paMeeting.getPlace() == null || paMeeting.getPlace().equals("")) {
             throw new MRException("Place is empty.");
         }
 
-        if (paMeeting.getShortTitle() == null) {
+        if (paMeeting.getShortTitle() == null || paMeeting.getShortTitle().equals("")) {
             throw new MRException("Short title is empty.");
         }
 
