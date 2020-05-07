@@ -123,6 +123,11 @@ public class MeetingPersistence {
             }
         }
 
+        if (paMeeting.getDate() != null && paMeeting.getDate().compareTo(new Date()) < 0 ) {
+            throw new MRException("Time is after actual time.");
+        }
+
+
         this.entityManager.persist(paMeeting);
         return paMeeting;
     }
