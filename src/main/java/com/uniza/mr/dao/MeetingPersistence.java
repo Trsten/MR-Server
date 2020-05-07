@@ -123,10 +123,10 @@ public class MeetingPersistence {
             }
         }
 
+
         if (paMeeting.getDate() != null && paMeeting.getDate().compareTo(new Date()) < 0 ) {
             throw new MRException("Time is after actual time.");
         }
-
 
         this.entityManager.persist(paMeeting);
         return paMeeting;
@@ -198,13 +198,11 @@ public class MeetingPersistence {
         if ( paMeeting.getDescription() != null) {
             meeting.setDescription(paMeeting.getDescription());
         }
-
         if (paMeeting.getAttendants() != null || !meeting.getAttendants().isEmpty()) {
             int index = 0;
             while (meeting.getAttendants().size() != index) {
                 Long attUserId = meeting.getAttendants().get(index).getUserId();
                 boolean found = false;
-
                 for (int i = 0; i < paMeeting.getAttendants().size(); i++) {
                     Long paAttUserId = paMeeting.getAttendants().get(i).getUserId();
                     if (paAttUserId.equals(attUserId)) {
